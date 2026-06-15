@@ -1,0 +1,48 @@
+@model List<StockOperation>
+<div class="page-title"><div><h1>Звіти складу</h1><p>Журнал руху товарів: надходження, продажі, списання та коригування.</p></div></div>
+<div class="cards two compact-cards"><div class="card"><span>Надходження</span><b>@string.Format("{0:N2}", ViewBag.TotalIn) грн</b></div><div class="card"><span>Витрата / продаж</span><b>@string.Format("{0:N2}", ViewBag.TotalOut) грн</b></div></div>
+@{
+    var typeGroups = Model
+        .GroupBy(x => x.Type)
+        .Select(g => new { label = g.Key, value = g.Sum(x => x.Amount) })
+        .ToList();
+    var monthGroups = Model
+        .GroupBy(x => new { x.Date.Year, x.Date.Month })
+        .OrderBy(g => g.Key.Year).ThenBy(g => g.Key.Month)
+        .Select(g => new {
+            label = $"{g.Key.Month:D2}.{g.Key.Year}",
+            income = g.Where(x => x.Type == "Надходження").Sum(x => x.Amount),
+            outcome = g.Where(x => x.Type != "Надходження").Sum(x => x.Amount)
+        })
+        .ToList();
+}
+@if (Model.Any())
+{
+<div class="cards two" style="margin-bottom:22px">
+<div class="card"><span>Розподіл за типом операції</span><div style="height:220px;position:relative"><canvas id="chartType"></canvas></div></div>
+<div class="card"><span>Динаміка по місяцях</span><div style="height:220px;position:relative"><canvas id="chartMonth"></canvas></div></div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<script>
+(function(){
+  var colorMap={'Надходження':'#22c55e','Продаж':'#3b82f6','Списання':'#ef4444'};
+  var typeLabels=@Html.Raw(System.Text.Json.JsonSerializer.Serialize(typeGroups.Select(x => x.label)));
+  var typeValues=@Html.Raw(System.Text.Json.JsonSerializer.Serialize(typeGroups.Select(x => (double)x.value)));
+  var typeColors=typeLabels.map(function(l){return colorMap[l]||'#a3a3a3';});
+  var monthLabels=@Html.Raw(System.Text.Json.JsonSerializer.Serialize(monthGroups.Select(x => x.label)));
+  var monthIncome=@Html.Raw(System.Text.Json.JsonSerializer.Serialize(monthGroups.Select(x => (double)x.income)));
+  var monthOutcome=@Html.Raw(System.Text.Json.JsonSerializer.Serialize(monthGroups.Select(x => (double)x.outcome)));
+  new Chart(document.getElementById('chartType'),{type:'doughnut',data:{labels:typeLabels,datasets:[{data:typeValues,backgroundColor:typeColors,borderWidth:2}]},options:{maintainAspectRatio:false,plugins:{legend:{position:'bottom'}}}});
+  new Chart(document.getElementById('chartMonth'),{type:'bar',data:{labels:monthLabels,datasets:[{label:'Надходження',data:monthIncome,backgroundColor:'#22c55e',borderRadius:6},{label:'Витрата',data:monthOutcome,backgroundColor:'#f87171',borderRadius:6}]},options:{maintainAspectRatio:false,responsive:true,scales:{y:{beginAtZero:true,ticks:{callback:function(v){return v.toLocaleString('uk-UA')+'₴';}}}},plugins:{legend:{position:'bottom'}}}});
+})();
+</script>
+}
+<form class="filters" method="get">
+<input name="search" value="@ViewBag.Search" placeholder="Пошук за товаром або контрагентом" />
+<select name="type"><option value="">Усі операції</option><option selected="@(ViewBag.Type=="Надходження")">Надходження</option><option selected="@(ViewBag.Type=="Продаж")">Продаж</option><option selected="@(ViewBag.Type=="Списання")">Списання</option></select>
+<select name="sort"><option value="">Дата ↓</option><option value="date" selected="@(ViewBag.Sort=="date")">Дата ↑</option><option value="amount_desc" selected="@(ViewBag.Sort=="amount_desc")">Сума ↓</option><option value="qty_desc" selected="@(ViewBag.Sort=="qty_desc")">Кількість ↓</option></select>
+<button>Застосувати</button><a class="light-btn" href="/Reports/Index">Скинути</a><a class="light-btn" href="/Reports/ExportXlsx?type=@ViewBag.Type&search=@ViewBag.Search&sort=@ViewBag.Sort">Експорт xlsx</a>
+</form>
+<table><thead><tr><th>Дата</th><th>Документ</th><th>Товар</th><th>Контрагент</th><th>Кількість</th><th>Сума</th><th>Коментар</th></tr></thead><tbody>
+@foreach(var r in Model){<tr><td>@r.Date.ToString("dd.MM.yyyy HH:mm")</td><td><span class="badge">@r.Type</span></td><td>@r.ProductName</td><td>@r.Counterparty</td><td>@r.Quantity</td><td>@r.Amount.ToString("N2") грн</td><td>@r.Comment</td></tr>}
+</tbody></table>

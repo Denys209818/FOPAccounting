@@ -1,0 +1,14 @@
+@model List<BusinessProfile>
+@{ var accesses = ViewBag.Accesses as List<UserProfileAccess>; }
+<div class="page-title"><div><h1>Мої профілі</h1><p>Один користувач може працювати з декількома ФОП або компаніями.</p></div><a class="btn" href="/Profiles/Create">+ Створити профіль</a></div>
+<div class="grid">
+@foreach (var item in Model)
+{
+    var role = accesses?.FirstOrDefault(x => x.ProfileId == item.Id)?.Role.ToString();
+    <div class="profile-card">
+        <div class="profile-head"><h2>@item.Name</h2><span class="badge">@role</span></div>
+        <p><b>ІПН/ЄДРПОУ:</b> @item.TaxNumber</p><p><b>Діяльність:</b> @item.ActivityType</p><p>@item.Description</p>
+        <div class="actions"><a class="btn" href="/Profiles/Select/@item.Id">Вибрати</a><a class="light-btn" href="/Profiles/Edit/@item.Id">Редагувати</a></div>
+    </div>
+}
+</div>

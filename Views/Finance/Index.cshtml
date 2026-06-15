@@ -1,0 +1,11 @@
+@model List<ManagementOperation>
+<div class="page-title"><div><h1>Фінанси</h1><p>Управлінський облік доходів і витрат профілю.</p></div></div>
+<div class="cards three compact-cards"><div class="card"><span>Доходи</span><b>@ViewBag.Income грн</b></div><div class="card"><span>Витрати</span><b>@ViewBag.Expense грн</b></div><div class="card"><span>Результат</span><b>@(ViewBag.Income - ViewBag.Expense) грн</b></div></div>
+<section class="panel">
+<form method="post" action="/Finance/Create" class="inline-form">
+<select name="Type"><option>Дохід</option><option>Витрата</option></select><input name="Amount" type="number" step="0.01" placeholder="Сума" required /><input name="Comment" placeholder="Коментар" required /><button class="btn">Додати</button>
+</form>
+<table><thead><tr><th>Дата</th><th>Тип</th><th>Сума</th><th>Коментар</th></tr></thead><tbody>
+@foreach(var o in Model){<tr><td>@o.Date.ToString("dd.MM.yyyy HH:mm")</td><td><span class="badge">@o.Type</span></td><td>@o.Amount грн</td><td>@o.Comment</td></tr>}
+</tbody></table>
+</section>

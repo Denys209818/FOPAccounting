@@ -1,0 +1,22 @@
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="utf-8" />
+    <title>Вхід</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body class="login-page">
+    <form method="post" class="login-card">
+        <h1>FOP Control</h1>
+        <p>Веб-застосунок для товарного та управлінського обліку ФОП</p>
+        @if (ViewBag.Error != null) { <div class="error">@ViewBag.Error</div> }
+        <input name="email" placeholder="Email" value="owner@test.com" />
+        <input name="password" placeholder="Пароль" type="password" value="1234" />
+        <button>Увійти</button>
+        <small><a href="/Auth/Register">Немає акаунту? Зареєструватися</a></small>
+    </form>
+</body>
+</html>

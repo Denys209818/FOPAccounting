@@ -1,0 +1,8 @@
+bin/
+obj/
+*.mdf
+*.ldf
+.DS_Store
+.git/
+.gitignore
+**/*.user

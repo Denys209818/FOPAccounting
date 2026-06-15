@@ -1,0 +1,14 @@
+@model BusinessProfile
+<div class="page-title"><div><h1>Створення профілю</h1><p>Основні дані профілю використовуються у звітах і документах.</p></div></div>
+<form method="post" class="form wide">
+    <input type="hidden" name="Id" value="@Model?.Id" />
+    <div class="form-grid">
+        <div><label>Назва профілю</label><input name="Name" value="@Model?.Name" required /></div>
+        <div><label>ІПН / ЄДРПОУ</label><input name="TaxNumber" value="@Model?.TaxNumber" required /></div>
+        <div><label>Вид діяльності</label><input name="ActivityType" value="@Model?.ActivityType" /></div>
+        <div><label>Телефон</label><input name="Phone" value="@Model?.Phone" /></div>
+        <div class="full"><label>Адреса</label><input name="Address" value="@Model?.Address" /></div>
+        <div class="full"><label>Опис</label><textarea name="Description">@Model?.Description</textarea></div>
+    </div>
+    <button class="btn">Зберегти</button>
+</form>

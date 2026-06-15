@@ -1,0 +1,24 @@
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="utf-8" />
+    <title>Реєстрація</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body class="login-page">
+    <form method="post" class="login-card">
+        <h1>FOP Control</h1>
+        <p>Створіть акаунт для обліку ФОП</p>
+        @if (ViewBag.Error != null) { <div class="error">@ViewBag.Error</div> }
+        <input name="fullName" placeholder="Повне ім'я" />
+        <input name="email" placeholder="Email" type="email" />
+        <input name="password" placeholder="Пароль" type="password" />
+        <input name="confirmPassword" placeholder="Повторіть пароль" type="password" />
+        <button>Зареєструватися</button>
+        <small><a href="/Auth/Login">Вже є акаунт? Увійти</a></small>
+    </form>
+</body>
+</html>

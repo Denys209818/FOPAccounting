@@ -1,0 +1,26 @@
+@model FopAccounting.ViewModels.ProductListViewModel
+<div class="page-title"><div><h1>Товарний облік</h1><p>Пошук, фільтрація, сортування, контроль мінімальних залишків.</p></div>@if (ViewBag.CanEdit) { <a class="btn" href="/Products/Create">+ Додати товар</a> }</div>
+<div class="cards three compact-cards">
+    <div class="card"><span>Залишок</span><b>@Model.TotalQuantity</b></div>
+    <div class="card"><span>Собівартість</span><b>@Model.TotalCost грн</b></div>
+    <div class="card"><span>Потенційний дохід</span><b>@Model.PotentialIncome грн</b></div>
+</div>
+<form class="filters" method="get">
+    <input name="search" value="@Model.Search" placeholder="Пошук: назва, артикул, категорія" />
+    <select name="category"><option value="">Усі категорії</option>@foreach(var c in Model.Categories){<option value="@c" selected="@(Model.Category==c)">@c</option>}</select>
+    <select name="warehouse"><option value="">Усі склади</option>@foreach(var w in Model.Warehouses){<option value="@w" selected="@(Model.Warehouse==w)">@w</option>}</select>
+    <select name="sort"><option value="">Нові спочатку</option><option value="name" selected="@(Model.Sort=="name")">Назва А-Я</option><option value="quantity" selected="@(Model.Sort=="quantity")">Кількість ↑</option><option value="quantity_desc" selected="@(Model.Sort=="quantity_desc")">Кількість ↓</option><option value="price" selected="@(Model.Sort=="price")">Ціна ↑</option><option value="price_desc" selected="@(Model.Sort=="price_desc")">Ціна ↓</option><option value="margin_desc" selected="@(Model.Sort=="margin_desc")">Маржа ↓</option></select>
+    <label class="check"><input type="checkbox" name="lowStockOnly" value="true" checked="@Model.LowStockOnly" /> Мін. залишок</label>
+    <button>Застосувати</button><a class="light-btn" href="/Products/Index">Скинути</a>
+</form>
+<table>
+<thead><tr><th>Артикул</th><th>Назва</th><th>Категорія</th><th>Склад</th><th>Ціна</th><th>К-сть</th><th>Маржа</th><th>Статус</th><th></th></tr></thead>
+<tbody>
+@foreach (var p in Model.Products)
+{
+<tr>
+<td>@p.Sku</td><td><b>@p.Name</b></td><td>@p.Category</td><td>@p.Warehouse</td><td>@p.SalePrice грн</td><td>@p.Quantity @p.Unit</td><td>@p.Margin грн</td><td>@if(p.IsLowStock){<span class="badge bad">Мало</span>}else{<span class="badge ok">Норма</span>}</td>
+<td class="row-actions">@if (ViewBag.CanEdit) { <a href="/Products/Edit/@p.Id">Редагувати</a><a class="danger" href="/Products/Delete/@p.Id">Видалити</a> } else { <span>Перегляд</span> }</td>
+</tr>
+}
+</tbody></table>

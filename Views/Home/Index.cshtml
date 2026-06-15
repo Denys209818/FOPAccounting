@@ -1,0 +1,22 @@
+@using FopAccounting.Models
+@{ var recent = ViewBag.RecentStock as List<StockOperation>; }
+<div class="page-title"><div><h1>Панель управління</h1><p>Зведення по активному профілю, товарах, залишках і фінансах.</p></div></div>
+<div class="cards four">
+    <div class="card"><span>Товарних позицій</span><b>@ViewBag.ProductsCount</b><small>активні позиції</small></div>
+    <div class="card"><span>Одиниць на складі</span><b>@ViewBag.TotalQuantity</b><small>загальний залишок</small></div>
+    <div class="card"><span>Собівартість складу</span><b>@ViewBag.TotalValue грн</b><small>по закупівельній ціні</small></div>
+    <div class="card warning"><span>Мінімальний залишок</span><b>@ViewBag.LowStock</b><small>потрібно поповнити</small></div>
+</div>
+<div class="split">
+<section class="panel">
+    <h2>Функціонал системи</h2>
+    <p>Система підтримує кілька бізнес-профілів для одного користувача. У кожному профілі користувач має власну роль: власник, бухгалтер, менеджер або переглядач. Від ролі залежить можливість редагування товарів, профілю та доступів.</p>
+    <div class="actions"><a class="btn" href="/Products/Index">Перейти до товарів</a><a class="light-btn" href="/Reports/Index">Відкрити звіти</a></div>
+</section>
+<section class="panel">
+    <h2>Останні складські події</h2>
+    <table class="compact"><thead><tr><th>Тип</th><th>Товар</th><th>Сума</th></tr></thead><tbody>
+    @foreach(var r in recent ?? new List<StockOperation>()) { <tr><td><span class="badge">@r.Type</span></td><td>@r.ProductName</td><td>@r.Amount грн</td></tr> }
+    </tbody></table>
+</section>
+</div>

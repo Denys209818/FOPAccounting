@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FOP Accounting</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="brand"><div class="avatar">F</div><div><b>FOP Control</b><span>облік ФОП</span></div></div>
+        <nav>
+            <a href="/Home/Index">▦ Панель</a>
+            <a href="/Profiles/Index">◉ Профілі</a>
+            <a href="/Products/Index">□ Товари</a>
+            <a href="/Reports/Index">≡ Звіти складу</a>
+            <a href="/Finance/Index">₴ Фінанси</a>
+            <a href="/Profiles/Accesses">⚙ Доступи</a>
+        </nav>
+        <a class="logout" href="/Auth/Logout">Вийти</a>
+    </aside>
+    <main class="content">
+        <header class="header">
+            <div>
+                <b>@(ViewBag.LayoutProfile?.Name ?? "Профіль не вибрано")</b>
+                <span>@(ViewBag.LayoutUser?.FullName) • роль: @(ViewBag.LayoutRole ?? "-")</span>
+            </div>
+            <a class="light-btn" href="/Profiles/Index">Змінити профіль</a>
+        </header>
+        @RenderBody()
+    </main>
+</body>
+</html>

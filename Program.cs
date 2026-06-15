@@ -12,8 +12,9 @@ var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
 if (!string.IsNullOrEmpty(databaseUrl))
 {
     var uri = new Uri(databaseUrl);
-    var userInfo = uri.UserInfo.Split(':');
-    connectionString = $"Host={uri.Host};Port={uri.Port};" +
+    var userInfo = uri.UserInfo.Split(':', 2);
+    var port = uri.Port == -1 ? 5432 : uri.Port;
+    connectionString = $"Host={uri.Host};Port={port};" +
                        $"Database={uri.AbsolutePath.TrimStart('/')};" +
                        $"Username={userInfo[0]};Password={Uri.UnescapeDataString(userInfo[1])};" +
                        "SSL Mode=Require;Trust Server Certificate=true";
